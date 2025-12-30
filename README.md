@@ -1,73 +1,124 @@
-# React + TypeScript + Vite
+# @mauromamani/ai-chatbot
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Una librería de componentes React para crear chatbots con interfaz de usuario moderna, construida con Assistant UI y Tailwind CSS.
 
-Currently, two official plugins are available:
+## Instalación
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install @mauromamani/ai-chatbot
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Uso
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Instalación de dependencias peer
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Asegúrate de tener React 18 instalado en tu proyecto:
+
+```bash
+npm install react@^18.2.0 react-dom@^18.2.0
 ```
+
+### Uso básico
+
+```tsx
+import { AssistantModal, MyRuntimeProvider } from '@mauromamani/ai-chatbot';
+import '@mauromamani/ai-chatbot/style.css';
+
+function App() {
+  return (
+    <MyRuntimeProvider apiUrl="http://localhost:3001/api/chat">
+      <AssistantModal />
+    </MyRuntimeProvider>
+  );
+}
+```
+
+### Configuración del API
+
+El componente `MyRuntimeProvider` requiere una URL de API que maneje las solicitudes de chat. La API debe aceptar POST requests con el siguiente formato:
+
+```json
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Hola"
+    }
+  ]
+}
+```
+
+Y debe responder con:
+
+```json
+{
+  "text": "Respuesta del chatbot"
+}
+```
+
+### Personalización
+
+Puedes importar componentes UI individuales para personalizar la apariencia:
+
+```tsx
+import { Button, Dialog, Avatar } from '@mauromamani/ai-chatbot';
+```
+
+### Estilos CSS
+
+Los estilos están incluidos en el paquete y se importan automáticamente cuando importas los componentes. Si necesitas importar los estilos manualmente:
+
+```tsx
+import '@mauromamani/ai-chatbot/style.css';
+```
+
+**Nota importante sobre Tailwind CSS**: Esta librería usa Tailwind CSS v4 con prefijo `tw:`. Los estilos están compilados en el CSS final, pero si tu proyecto también usa Tailwind CSS, asegúrate de que no haya conflictos. Los estilos de la librería están prefijados con `tw:`, por lo que no deberían interferir con tus estilos personalizados.
+
+## Requisitos
+
+- React ^18.2.0
+- React DOM ^18.2.0
+
+## Desarrollo
+
+```bash
+# Instalar dependencias
+npm install
+
+# Modo desarrollo
+npm run dev
+
+# Construir librería
+npm run build
+
+# Linting
+npm run lint
+```
+
+## Publicación local (para desarrollo)
+
+Para usar esta librería localmente en tu proyecto antes de publicarla en npm:
+
+1. Construye la librería:
+```bash
+npm run build
+```
+
+2. En tu proyecto, instala desde la carpeta local:
+```bash
+npm install file:../ruta/a/chatbot
+```
+
+O crea un paquete tarball:
+```bash
+npm pack
+```
+
+Y luego instálalo:
+```bash
+npm install ./mauromamani-ai-chatbot-1.0.0.tgz
+```
+
+## Licencia
+
+MIT

@@ -1,0 +1,15 @@
+node_modules
+src
+.vscode
+.git
+.gitignore
+*.log
+*.tsbuildinfo
+dist/assets
+tsconfig*.json
+vite.config.ts
+eslint.config.js
+index.html
+public
+components.json
+
