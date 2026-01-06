@@ -86,8 +86,8 @@ const ThreadWelcome: FC = () => {
           <h1 className="aui-thread-welcome-message-inner tw:fade-in tw:slide-in-from-bottom-1 tw:animate-in tw:font-semibold tw:text-2xl tw:duration-200">
             Hola!
           </h1>
-          <p className="aui-thread-welcome-message-inner tw:fade-in tw:slide-in-from-bottom-1 tw:animate-in tw:text-muted-foreground tw:text-xl tw:delay-75 tw:duration-200">
-            ¿Cómo puedo ayudarte hoy?
+          <p className="aui-thread-welcome-message-inner tw:fade-in tw:slide-in-from-bottom-1 tw:animate-in tw:text-muted-foreground tw:text-lg tw:delay-75 tw:duration-200 tw:-mt-2">
+            Soy tu asistente jurídico personal. ¿En qué puedo ayudarte?
           </p>
         </div>
       </div>

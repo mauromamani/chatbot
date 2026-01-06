@@ -40,17 +40,17 @@ const AssistantModalButton = forwardRef<
       tooltip={tooltip}
       side="left"
       {...rest}
-      className="aui-modal-button tw:size-full tw:rounded-full tw:shadow tw:transition-transform tw:hover:scale-110 tw:active:scale-90"
+      className="aui-modal-button tw:size-full tw:rounded-full tw:shadow tw:transition-transform tw:hover:scale-110 tw:active:scale-90 tw:bg-primary tw:text-primary-foreground tw:hover:bg-primary/90 tw:hover:text-primary-foreground"
       ref={ref}
     >
       <BotIcon
         data-state={state}
-        className="aui-modal-button-closed-icon tw:absolute tw:size-6 tw:transition-all tw:data-[state=closed]:rotate-0 tw:data-[state=open]:rotate-90 tw:data-[state=closed]:scale-100 tw:data-[state=open]:scale-0"
+        className="aui-modal-button-closed-icon tw:absolute tw:size-6 tw:transition-all tw:data-[state=closed]:rotate-0 tw:data-[state=open]:rotate-90 tw:data-[state=closed]:scale-100 tw:data-[state=open]:scale-0 tw:text-current"
       />
 
       <ChevronDownIcon
         data-state={state}
-        className="aui-modal-button-open-icon tw:absolute tw:size-6 tw:transition-all tw:data-[state=closed]:-rotate-90 tw:data-[state=open]:rotate-0 tw:data-[state=closed]:scale-0 tw:data-[state=open]:scale-100"
+        className="aui-modal-button-open-icon tw:absolute tw:size-6 tw:transition-all tw:data-[state=closed]:-rotate-90 tw:data-[state=open]:rotate-0 tw:data-[state=closed]:scale-0 tw:data-[state=open]:scale-100 tw:text-current"
       />
       <span className="aui-sr-only tw:sr-only">{tooltip}</span>
     </TooltipIconButton>
