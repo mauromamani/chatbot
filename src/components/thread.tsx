@@ -41,7 +41,7 @@ export const Thread: FC = () => {
     >
       <ThreadPrimitive.Viewport
         turnAnchor="top"
-        className="aui-thread-viewport tw:relative tw:flex tw:flex-1 tw:flex-col tw:overflow-x-auto tw:overflow-y-scroll tw:scroll-smooth tw:px-4 tw:pt-4"
+        className="aui-thread-viewport tw:relative tw:flex tw:flex-1 tw:flex-col tw:overflow-x-hidden tw:overflow-y-scroll tw:scroll-smooth tw:px-4 tw:pt-4"
       >
         <AssistantIf condition={({ thread }) => thread.isEmpty}>
           <ThreadWelcome />
@@ -80,17 +80,18 @@ const ThreadScrollToBottom: FC = () => {
 
 const ThreadWelcome: FC = () => {
   return (
-    <div className="aui-thread-welcome-root tw:mx-auto tw:my-auto tw:flex tw:w-full tw:max-w-(--thread-max-width) tw:grow tw:flex-col">
-      <div className="aui-thread-welcome-center tw:flex tw:w-full tw:grow tw:flex-col tw:items-center tw:justify-center">
+    <div className="aui-thread-welcome-root tw:mx-auto tw:my-auto tw:flex tw:w-full tw:max-w-(--thread-max-width) tw:flex-col">
+      <div className="aui-thread-welcome-center tw:flex tw:w-full tw:flex-col tw:items-center tw:justify-center">
         <div className="aui-thread-welcome-message tw:flex tw:size-full tw:flex-col tw:justify-center tw:px-4">
           <h1 className="aui-thread-welcome-message-inner tw:fade-in tw:slide-in-from-bottom-1 tw:animate-in tw:font-semibold tw:text-2xl tw:duration-200">
-            Hello there!
+            Hola!
           </h1>
           <p className="aui-thread-welcome-message-inner tw:fade-in tw:slide-in-from-bottom-1 tw:animate-in tw:text-muted-foreground tw:text-xl tw:delay-75 tw:duration-200">
-            How can I help you today?
+            ¿Cómo puedo ayudarte hoy?
           </p>
         </div>
       </div>
+
       <ThreadSuggestions />
     </div>
   );
@@ -110,6 +111,7 @@ const SUGGESTIONS = [
 ] as const;
 
 const ThreadSuggestions: FC = () => {
+  return null;
   return (
     <div className="aui-thread-welcome-suggestions tw:grid tw:w-full tw:@md:grid-cols-2 tw:gap-2 tw:pb-4">
       {SUGGESTIONS.map((suggestion, index) => (
@@ -235,26 +237,26 @@ const AssistantActionBar: FC = () => {
       hideWhenRunning
       autohide="not-last"
       autohideFloat="single-branch"
-      className="aui-assistant-action-bar-root tw:col-start-3 tw:row-start-2 tw:-ml-1 tw:flex tw:gap-1 tw:text-muted-foreground tw:data-floating:absolute tw:data-floating:rounded-md tw:data-floating:border tw:data-floating:bg-background tw:data-floating:p-1 tw:data-floating:shadow-sm"
+      className="aui-assistant-action-bar-root tw:col-start-3 tw:row-start-2 tw:-ml-1 tw:flex tw:gap-1 tw:text-muted-foreground tw:data-floating:absolute tw:data-floating:rounded-md tw:data-floating:border tw:data-floating:border-input tw:data-floating:bg-background tw:data-floating:p-1 tw:data-floating:shadow-sm"
     >
       <ActionBarPrimitive.Copy asChild>
         <TooltipIconButton tooltip="Copy">
           <AssistantIf condition={({ message }) => message.isCopied}>
-            <CheckIcon />
+            <CheckIcon className="tw:size-4" />
           </AssistantIf>
           <AssistantIf condition={({ message }) => !message.isCopied}>
-            <CopyIcon />
+            <CopyIcon className="tw:size-4" />
           </AssistantIf>
         </TooltipIconButton>
       </ActionBarPrimitive.Copy>
       <ActionBarPrimitive.ExportMarkdown asChild>
         <TooltipIconButton tooltip="Export as Markdown">
-          <DownloadIcon />
+          <DownloadIcon className="tw:size-4" />
         </TooltipIconButton>
       </ActionBarPrimitive.ExportMarkdown>
       <ActionBarPrimitive.Reload asChild>
         <TooltipIconButton tooltip="Refresh">
-          <RefreshCwIcon />
+          <RefreshCwIcon className="tw:size-4" />
         </TooltipIconButton>
       </ActionBarPrimitive.Reload>
     </ActionBarPrimitive.Root>
@@ -264,13 +266,13 @@ const AssistantActionBar: FC = () => {
 const UserMessage: FC = () => {
   return (
     <MessagePrimitive.Root
-      className="aui-user-message-root tw:fade-in tw:slide-in-from-bottom-1 tw:mx-auto tw:grid tw:w-full tw:max-w-(--thread-max-width) tw:animate-in tw:auto-rows-auto tw:grid-cols-[minmax(72px,1fr)_auto] tw:content-start tw:gap-y-2 tw:px-2 tw:py-3 tw:duration-150 tw:[&:where(>*)]:col-start-2"
+      className="aui-user-message-root tw:fade-in tw:slide-in-from-bottom-1 tw:mx-auto tw:grid tw:w-full tw:max-w-(--thread-max-width) tw:animate-in tw:auto-rows-auto tw:grid-cols-[minmax(72px,1fr)_auto] tw:content-start tw:gap-y-2 tw:px-2 tw:py-1.5 tw:duration-150 tw:[&:where(>*)]:col-start-2"
       data-role="user"
     >
       <UserMessageAttachments />
 
       <div className="aui-user-message-content-wrapper tw:relative tw:col-start-2 tw:min-w-0">
-        <div className="aui-user-message-content tw:wrap-break-word tw:rounded-2xl tw:bg-muted tw:px-4 tw:py-2.5 tw:text-foreground">
+        <div className="aui-user-message-content tw:wrap-break-word tw:rounded-2xl tw:bg-muted tw:px-3 tw:py-0 tw:text-foreground">
           <MessagePrimitive.Parts />
         </div>
         <div className="aui-user-action-bar-wrapper tw:absolute tw:top-1/2 tw:left-0 tw:-translate-x-full tw:-translate-y-1/2 tw:pr-2">
@@ -304,17 +306,17 @@ const EditComposer: FC = () => {
     <MessagePrimitive.Root className="aui-edit-composer-wrapper tw:mx-auto tw:flex tw:w-full tw:max-w-(--thread-max-width) tw:flex-col tw:px-2 tw:py-3">
       <ComposerPrimitive.Root className="aui-edit-composer-root tw:ml-auto tw:flex tw:w-full tw:max-w-[85%] tw:flex-col tw:rounded-2xl tw:bg-muted">
         <ComposerPrimitive.Input
-          className="aui-edit-composer-input tw:min-h-14 tw:w-full tw:resize-none tw:bg-transparent tw:p-4 tw:text-foreground tw:text-sm tw:outline-none"
+          className="aui-edit-composer-input tw:min-h-14 tw:w-full tw:resize-none tw:bg-transparent tw:border-0 tw:p-4 tw:text-foreground tw:text-sm tw:outline-none"
           autoFocus
         />
         <div className="aui-edit-composer-footer tw:mx-3 tw:mb-3 tw:flex tw:items-center tw:gap-2 tw:self-end">
           <ComposerPrimitive.Cancel asChild>
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" className="tw:border-0">
               Cancel
             </Button>
           </ComposerPrimitive.Cancel>
           <ComposerPrimitive.Send asChild>
-            <Button size="sm">Update</Button>
+            <Button size="sm" className="tw:border-0">Update</Button>
           </ComposerPrimitive.Send>
         </div>
       </ComposerPrimitive.Root>

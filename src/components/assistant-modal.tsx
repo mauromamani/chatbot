@@ -18,7 +18,7 @@ export const AssistantModal: FC = () => {
       </AssistantModalPrimitive.Anchor>
       <AssistantModalPrimitive.Content
         sideOffset={16}
-        className="aui-root aui-modal-content tw:data-[state=closed]:fade-out-0 tw:data-[state=closed]:slide-out-to-bottom-1/2 tw:data-[state=closed]:slide-out-to-right-1/2 tw:data-[state=closed]:zoom-out tw:data-[state=open]:fade-in-0 tw:data-[state=open]:slide-in-from-bottom-1/2 tw:data-[state=open]:slide-in-from-right-1/2 tw:data-[state=open]:zoom-in tw:z-50 tw:h-[500px] tw:w-[400px] tw:overflow-clip tw:overscroll-contain tw:rounded-xl tw:border tw:bg-popover tw:p-0 tw:text-popover-foreground tw:shadow-md tw:outline-none tw:data-[state=closed]:animate-out tw:data-[state=open]:animate-in tw:[&>.aui-thread-root]:bg-inherit"
+        className="aui-root aui-modal-content tw:data-[state=closed]:fade-out-0 tw:data-[state=closed]:slide-out-to-bottom-1/2 tw:data-[state=closed]:slide-out-to-right-1/2 tw:data-[state=closed]:zoom-out tw:data-[state=open]:fade-in-0 tw:data-[state=open]:slide-in-from-bottom-1/2 tw:data-[state=open]:slide-in-from-right-1/2 tw:data-[state=open]:zoom-in tw:z-50 tw:h-[500px] tw:w-[400px] tw:overflow-x-hidden tw:overscroll-contain tw:rounded-xl tw:border tw:border-input tw:bg-popover tw:p-0 tw:text-popover-foreground tw:shadow-sm tw:outline-none tw:data-[state=closed]:animate-out tw:data-[state=open]:animate-in tw:[&>.aui-thread-root]:bg-inherit"
       >
         <Thread />
       </AssistantModalPrimitive.Content>
