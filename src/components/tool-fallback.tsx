@@ -45,7 +45,7 @@ export const ToolFallback: ToolCallMessagePartComponent = ({
             isCancelled && "tw:text-muted-foreground tw:line-through",
           )}
         >
-          {isCancelled ? "Cancelled tool: " : "Used tool: "}
+          {isCancelled ? "Herramienta cancelada: " : "Herramienta usada: "}
           <b>{toolName}</b>
         </p>
         <Button onClick={() => setIsCollapsed(!isCollapsed)}>
@@ -57,7 +57,7 @@ export const ToolFallback: ToolCallMessagePartComponent = ({
           {cancelledReason && (
             <div className="aui-tool-fallback-cancelled-root tw:px-4">
               <p className="aui-tool-fallback-cancelled-header tw:font-semibold tw:text-muted-foreground">
-                Cancelled reason:
+                Razón de cancelación:
               </p>
               <p className="aui-tool-fallback-cancelled-reason tw:text-muted-foreground">
                 {cancelledReason}
@@ -77,7 +77,7 @@ export const ToolFallback: ToolCallMessagePartComponent = ({
           {!isCancelled && result !== undefined && (
             <div className="aui-tool-fallback-result-root tw:border-t tw:border-dashed tw:px-4 tw:pt-2">
               <p className="aui-tool-fallback-result-header tw:font-semibold">
-                Result:
+                Resultado:
               </p>
               <pre className="aui-tool-fallback-result-content tw:whitespace-pre-wrap">
                 {typeof result === "string"

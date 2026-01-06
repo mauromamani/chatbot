@@ -56,7 +56,7 @@ const AttachmentPreview: FC<AttachmentPreviewProps> = ({ src }) => {
   return (
     <img
       src={src}
-      alt="Image Preview"
+      alt="Vista previa de imagen"
       className="aui-attachment-preview-image-loaded tw:block tw:h-auto tw:max-h-[80vh] tw:w-auto tw:max-w-full tw:object-contain"
     />
   );
@@ -77,7 +77,7 @@ const AttachmentPreviewDialog: FC<PropsWithChildren> = ({ children }) => {
       </DialogTrigger>
       <DialogContent className="aui-attachment-preview-dialog-content tw:p-2 tw:sm:max-w-3xl tw:[&>button]:rounded-full tw:[&>button]:bg-foreground/60 tw:[&>button]:p-1 tw:[&>button]:opacity-100 tw:[&>button]:ring-0! tw:[&_svg]:text-background tw:[&>button]:hover:[&_svg]:text-destructive">
         <DialogTitle className="aui-sr-only tw:sr-only">
-          Image Attachment Preview
+          Vista previa de adjunto de imagen
         </DialogTitle>
         <div className="aui-attachment-preview tw:relative tw:mx-auto tw:flex tw:max-h-[80dvh] tw:w-full tw:items-center tw:justify-center tw:overflow-hidden tw:bg-background">
           <AttachmentPreview src={src} />
@@ -97,7 +97,7 @@ const AttachmentThumb: FC = () => {
     <Avatar className="aui-attachment-tile-avatar tw:h-full tw:w-full tw:rounded-none">
       <AvatarImage
         src={src}
-        alt="Attachment preview"
+        alt="Vista previa de adjunto"
         className="aui-attachment-tile-image tw:object-cover"
       />
       <AvatarFallback delayMs={isImage ? 200 : 0}>
@@ -118,13 +118,13 @@ const AttachmentUI: FC = () => {
     const type = attachment.type;
     switch (type) {
       case "image":
-        return "Image";
+        return "Imagen";
       case "document":
-        return "Document";
+        return "Documento";
       case "file":
-        return "File";
+        return "Archivo";
       default:
-        return `Unknown attachment type: ${type}`;
+        return `Tipo de adjunto desconocido: ${type}`;
     }
   });
 
@@ -166,7 +166,7 @@ const AttachmentRemove: FC = () => {
   return (
     <AttachmentPrimitive.Remove asChild>
       <TooltipIconButton
-        tooltip="Remove file"
+        tooltip="Eliminar archivo"
         className="aui-attachment-tile-remove tw:absolute tw:top-1.5 tw:right-1.5 tw:size-3.5 tw:rounded-full tw:bg-white tw:text-muted-foreground tw:opacity-100 tw:shadow-sm tw:hover:bg-white! tw:[&_svg]:text-black tw:hover:[&_svg]:text-destructive"
         side="top"
       >
@@ -198,12 +198,12 @@ export const ComposerAddAttachment: FC = () => {
   return (
     <ComposerPrimitive.AddAttachment asChild>
       <TooltipIconButton
-        tooltip="Add Attachment"
+        tooltip="Agregar adjunto"
         side="bottom"
         variant="ghost"
         size="icon"
         className="aui-composer-add-attachment tw:size-[34px] tw:rounded-full tw:p-1 tw:font-semibold tw:text-xs tw:hover:bg-muted-foreground/15 tw:dark:border-muted-foreground/15 tw:dark:hover:bg-muted-foreground/30"
-        aria-label="Add Attachment"
+        aria-label="Agregar adjunto"
       >
         <PlusIcon className="aui-attachment-add-icon tw:size-5 tw:stroke-[1.5px]" />
       </TooltipIconButton>

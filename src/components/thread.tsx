@@ -68,7 +68,7 @@ const ThreadScrollToBottom: FC = () => {
   return (
     <ThreadPrimitive.ScrollToBottom asChild>
       <TooltipIconButton
-        tooltip="Scroll to bottom"
+        tooltip="Ir al final"
         variant="outline"
         className="aui-thread-scroll-to-bottom tw:absolute tw:-top-12 tw:z-10 tw:self-center tw:rounded-full tw:p-4 tw:disabled:invisible tw:dark:bg-background tw:dark:hover:bg-accent"
       >
@@ -146,11 +146,11 @@ const Composer: FC = () => {
       <ComposerPrimitive.AttachmentDropzone className="aui-composer-attachment-dropzone tw:flex tw:w-full tw:flex-col tw:rounded-2xl tw:border tw:border-input tw:bg-background tw:px-1 tw:pt-2 tw:outline-none tw:transition-shadow tw:has-[textarea:focus-visible]:border-ring tw:has-[textarea:focus-visible]:ring-2 tw:has-[textarea:focus-visible]:ring-ring/20 tw:data-[dragging=true]:border-ring tw:data-[dragging=true]:border-dashed tw:data-[dragging=true]:bg-accent/50 tw:overflow-hidden">
         {/* <ComposerAttachments /> */}
         <ComposerPrimitive.Input
-          placeholder="Send a message..."
+          placeholder="Enviar un mensaje..."
           className="aui-composer-input tw:mb-1 tw:max-h-32 tw:min-h-14 tw:w-full tw:resize-none tw:bg-transparent tw:border-0 tw:px-4 tw:pt-2 tw:pb-3 tw:text-sm tw:outline-none tw:placeholder:text-muted-foreground tw:focus-visible:ring-0"
           rows={1}
           autoFocus
-          aria-label="Message input"
+          aria-label="Entrada de mensaje"
         />
         <ComposerAction />
       </ComposerPrimitive.AttachmentDropzone>
@@ -167,13 +167,13 @@ const ComposerAction: FC = () => {
       <AssistantIf condition={({ thread }) => !thread.isRunning}>
         <ComposerPrimitive.Send asChild>
           <TooltipIconButton
-            tooltip="Send message"
+            tooltip="Enviar mensaje"
             side="bottom"
             type="submit"
             variant="default"
             size="icon"
             className="aui-composer-send tw:size-8 tw:rounded-full"
-            aria-label="Send message"
+            aria-label="Enviar mensaje"
           >
             <ArrowUpIcon className="aui-composer-send-icon tw:size-4" />
           </TooltipIconButton>
@@ -187,7 +187,7 @@ const ComposerAction: FC = () => {
             variant="default"
             size="icon"
             className="aui-composer-cancel tw:size-8 tw:rounded-full"
-            aria-label="Stop generating"
+            aria-label="Detener generación"
           >
             <SquareIcon className="aui-composer-cancel-icon tw:size-3 tw:fill-current" />
           </Button>
@@ -240,7 +240,7 @@ const AssistantActionBar: FC = () => {
       className="aui-assistant-action-bar-root tw:col-start-3 tw:row-start-2 tw:-ml-1 tw:flex tw:gap-1 tw:text-muted-foreground tw:data-floating:absolute tw:data-floating:rounded-md tw:data-floating:border tw:data-floating:border-input tw:data-floating:bg-background tw:data-floating:p-1 tw:data-floating:shadow-sm"
     >
       <ActionBarPrimitive.Copy asChild>
-        <TooltipIconButton tooltip="Copy">
+        <TooltipIconButton tooltip="Copiar">
           <AssistantIf condition={({ message }) => message.isCopied}>
             <CheckIcon className="tw:size-4" />
           </AssistantIf>
@@ -250,12 +250,12 @@ const AssistantActionBar: FC = () => {
         </TooltipIconButton>
       </ActionBarPrimitive.Copy>
       <ActionBarPrimitive.ExportMarkdown asChild>
-        <TooltipIconButton tooltip="Export as Markdown">
+        <TooltipIconButton tooltip="Exportar como Markdown">
           <DownloadIcon className="tw:size-4" />
         </TooltipIconButton>
       </ActionBarPrimitive.ExportMarkdown>
       <ActionBarPrimitive.Reload asChild>
-        <TooltipIconButton tooltip="Refresh">
+        <TooltipIconButton tooltip="Actualizar">
           <RefreshCwIcon className="tw:size-4" />
         </TooltipIconButton>
       </ActionBarPrimitive.Reload>
@@ -293,7 +293,7 @@ const UserActionBar: FC = () => {
       className="aui-user-action-bar-root tw:flex tw:flex-col tw:items-end"
     >
       <ActionBarPrimitive.Edit asChild>
-        <TooltipIconButton tooltip="Edit" className="aui-user-action-edit tw:p-4">
+        <TooltipIconButton tooltip="Editar" className="aui-user-action-edit tw:p-4">
           <PencilIcon />
         </TooltipIconButton>
       </ActionBarPrimitive.Edit>
@@ -312,11 +312,11 @@ const EditComposer: FC = () => {
         <div className="aui-edit-composer-footer tw:mx-3 tw:mb-3 tw:flex tw:items-center tw:gap-2 tw:self-end">
           <ComposerPrimitive.Cancel asChild>
             <Button variant="ghost" size="sm" className="tw:border-0">
-              Cancel
+              Cancelar
             </Button>
           </ComposerPrimitive.Cancel>
           <ComposerPrimitive.Send asChild>
-            <Button size="sm" className="tw:border-0">Update</Button>
+            <Button size="sm" className="tw:border-0">Actualizar</Button>
           </ComposerPrimitive.Send>
         </div>
       </ComposerPrimitive.Root>
@@ -338,7 +338,7 @@ const BranchPicker: FC<BranchPickerPrimitive.Root.Props> = ({
       {...rest}
     >
       <BranchPickerPrimitive.Previous asChild>
-        <TooltipIconButton tooltip="Previous">
+        <TooltipIconButton tooltip="Anterior">
           <ChevronLeftIcon />
         </TooltipIconButton>
       </BranchPickerPrimitive.Previous>
@@ -346,7 +346,7 @@ const BranchPicker: FC<BranchPickerPrimitive.Root.Props> = ({
         <BranchPickerPrimitive.Number /> / <BranchPickerPrimitive.Count />
       </span>
       <BranchPickerPrimitive.Next asChild>
-        <TooltipIconButton tooltip="Next">
+        <TooltipIconButton tooltip="Siguiente">
           <ChevronRightIcon />
         </TooltipIconButton>
       </BranchPickerPrimitive.Next>
