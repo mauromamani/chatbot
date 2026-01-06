@@ -3,11 +3,14 @@ import {
   AssistantRuntimeProvider,
   useLocalRuntime,
   type ChatModelAdapter,
+  type ThreadMessage,
 } from "@assistant-ui/react";
 
 export interface RuntimeProviderProps {
   children: ReactNode;
-  apiUrl?: string;
+  apiUrl: string;
+  userId: number;
+  sessionId: string;
 }
 
 // async function* backendApi({ messages, abortSignal, context, apiUrl }) {
@@ -40,48 +43,111 @@ export interface RuntimeProviderProps {
 //   }
 // }
 
-const createModelAdapter = (apiUrl: string): ChatModelAdapter => ({
+// Función para obtener o generar un ID de sesión
+const getSessionId = (providedId?: string): string => {
+  if (providedId) {
+    return providedId;
+  }
+  
+  const storageKey = "chatbot_session_id";
+  let sessionId = localStorage.getItem(storageKey);
+  
+  if (!sessionId) {
+    sessionId = crypto.randomUUID();
+    localStorage.setItem(storageKey, sessionId);
+  }
+  
+  return sessionId;
+};
+
+// Función para extraer el mensaje del usuario del array de mensajes
+const extractUserMessage = (messages: readonly ThreadMessage[]): string => {
+  // Buscar el último mensaje del usuario
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const message = messages[i];
+    if (message.role === "user") {
+      // El contenido puede ser un string o un array de objetos con type y text
+      if (typeof message.content === "string") {
+        return message.content;
+      }
+      if (Array.isArray(message.content)) {
+        const textParts = message.content
+          .filter((part) => part.type === "text")
+          .map((part) => (typeof part.text === "string" ? part.text : ""))
+          .join("");
+        return textParts || "";
+      }
+    }
+  }
+  return "";
+};
+
+const createModelAdapter = (
+  apiUrl: string,
+  userId: number,
+  sessionId: string
+): ChatModelAdapter => ({
   async run({ messages, abortSignal }) {
+    // Extraer el mensaje del usuario
+    const mensaje = extractUserMessage(messages);
+    
+    // Preparar el body según el formato requerido
+    const body = {
+      mensaje,
+      id_sesion: sessionId,
+      id_usuario: userId,
+    };
+
+    try {
     const result = await fetch(apiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        messages,
-      }),
+      body: JSON.stringify(body),
       signal: abortSignal,
     });
 
+    if (!result.ok) {
+      throw new Error(`Error en la API: ${result.status} ${result.statusText}`);
+    }
+
     const data = await result.json();
+    
+    // La respuesta viene en formato { output: string }
+    const responseText = data.output || "";
+    
     return {
       content: [
         {
           type: "text",
-          text: data.text,
+          text: responseText,
         },
       ],
     };
+
+  } catch (error) {
+    console.error(error);
+    return {
+      content: [
+        {
+          type: "text",
+          text: "Error en la API: " + error,
+        },
+      ],
+    };
+  }
   },
-
-  // async *run({ messages, abortSignal, context }) {
-  //   const stream = await backendApi({ messages, abortSignal, context, apiUrl });
-
-  //   let text = "";
-  //   for await (const part of stream) {
-  //     text += part.choices[0]?.delta?.content || "";
-  //     yield {
-  //       content: [{ type: "text", text }],
-  //     };
-  //   }
-  // },
 });
 
 export function MyRuntimeProvider({
   children,
-  apiUrl = "http://localhost:3001/api/chat",
+  apiUrl,
+  userId,
+  sessionId,
 }: Readonly<RuntimeProviderProps>) {
-  const modelAdapter = createModelAdapter(apiUrl);
+  const sessionIdValue = getSessionId(sessionId);
+  const modelAdapter = createModelAdapter(apiUrl, userId, sessionIdValue);
   const runtime = useLocalRuntime(modelAdapter);
 
   return (
