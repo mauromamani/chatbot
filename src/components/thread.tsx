@@ -1,8 +1,6 @@
-"use client";
-
 import {
-  ComposerAddAttachment,
-  ComposerAttachments,
+  // ComposerAddAttachment,
+  // ComposerAttachments,
   UserMessageAttachments,
 } from "@/components/attachment";
 import { MarkdownText } from "@/components/markdown-text";
@@ -143,11 +141,11 @@ const ThreadSuggestions: FC = () => {
 const Composer: FC = () => {
   return (
     <ComposerPrimitive.Root className="aui-composer-root tw:relative tw:flex tw:w-full tw:flex-col">
-      <ComposerPrimitive.AttachmentDropzone className="aui-composer-attachment-dropzone tw:flex tw:w-full tw:flex-col tw:rounded-2xl tw:border tw:border-input tw:bg-background tw:px-1 tw:pt-2 tw:outline-none tw:transition-shadow tw:has-[textarea:focus-visible]:border-ring tw:has-[textarea:focus-visible]:ring-2 tw:has-[textarea:focus-visible]:ring-ring/20 tw:data-[dragging=true]:border-ring tw:data-[dragging=true]:border-dashed tw:data-[dragging=true]:bg-accent/50">
-        <ComposerAttachments />
+      <ComposerPrimitive.AttachmentDropzone className="aui-composer-attachment-dropzone tw:flex tw:w-full tw:flex-col tw:rounded-2xl tw:border tw:border-input tw:bg-background tw:px-1 tw:pt-2 tw:outline-none tw:transition-shadow tw:has-[textarea:focus-visible]:border-ring tw:has-[textarea:focus-visible]:ring-2 tw:has-[textarea:focus-visible]:ring-ring/20 tw:data-[dragging=true]:border-ring tw:data-[dragging=true]:border-dashed tw:data-[dragging=true]:bg-accent/50 tw:overflow-hidden">
+        {/* <ComposerAttachments /> */}
         <ComposerPrimitive.Input
           placeholder="Send a message..."
-          className="aui-composer-input tw:mb-1 tw:max-h-32 tw:min-h-14 tw:w-full tw:resize-none tw:bg-transparent tw:px-4 tw:pt-2 tw:pb-3 tw:text-sm tw:outline-none tw:placeholder:text-muted-foreground tw:focus-visible:ring-0"
+          className="aui-composer-input tw:mb-1 tw:max-h-32 tw:min-h-14 tw:w-full tw:resize-none tw:bg-transparent tw:border-0 tw:px-4 tw:pt-2 tw:pb-3 tw:text-sm tw:outline-none tw:placeholder:text-muted-foreground tw:focus-visible:ring-0"
           rows={1}
           autoFocus
           aria-label="Message input"
@@ -160,8 +158,9 @@ const Composer: FC = () => {
 
 const ComposerAction: FC = () => {
   return (
-    <div className="aui-composer-action-wrapper tw:relative tw:mx-2 tw:mb-2 tw:flex tw:items-center tw:justify-between">
-      <ComposerAddAttachment />
+    <div className="aui-composer-action-wrapper tw:relative tw:mx-2 tw:mb-2 tw:flex tw:items-center tw:justify-end">
+      {/* TODO: Add attachment dropzone */}
+      {/* <ComposerAddAttachment /> */}
 
       <AssistantIf condition={({ thread }) => !thread.isRunning}>
         <ComposerPrimitive.Send asChild>

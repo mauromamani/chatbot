@@ -16,8 +16,8 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'AIChatbot',
-      formats: ['es', 'cjs'],
-      fileName: (format) => `index.${format === 'es' ? 'mjs' : 'cjs'}`,
+      formats: ['es'],
+      fileName: () => 'index.js',
     },
     rollupOptions: {
       external: [
@@ -44,12 +44,14 @@ export default defineConfig({
           'react/jsx-runtime': 'react/jsx-runtime',
         },
         assetFileNames: (assetInfo) => {
-          if (assetInfo.name === 'style.css') return 'style.css'
-          return assetInfo.name || 'assets/[name][extname]'
+          if (assetInfo.name && assetInfo.name.endsWith('.css')) {
+            return 'style.css';
+          }
+          return assetInfo.name || 'assets/[name][extname]';
         },
       },
     },
     cssCodeSplit: false,
-    sourcemap: true,
+    sourcemap: false,
   },
 })
