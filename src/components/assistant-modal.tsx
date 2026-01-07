@@ -1,14 +1,17 @@
 "use client";
 
-import { BotIcon, ChevronDownIcon } from "lucide-react";
+import { BotIcon, ChevronDownIcon, Maximize2Icon, Minimize2Icon } from "lucide-react";
 
-import { type FC, forwardRef } from "react";
+import { type FC, forwardRef, useState } from "react";
 import { AssistantModalPrimitive } from "@assistant-ui/react";
 
 import { Thread } from "@/components/thread";
 import { TooltipIconButton } from "@/components/tooltip-icon-button";
+import { cn } from "@/lib/utils";
 
 export const AssistantModal: FC = () => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   return (
     <AssistantModalPrimitive.Root>
       <AssistantModalPrimitive.Anchor className="aui-root aui-modal-anchor tw:fixed tw:right-4 tw:bottom-4 tw:size-11">
@@ -17,9 +20,27 @@ export const AssistantModal: FC = () => {
         </AssistantModalPrimitive.Trigger>
       </AssistantModalPrimitive.Anchor>
       <AssistantModalPrimitive.Content
-        sideOffset={16}
-        className="aui-root aui-modal-content tw:data-[state=closed]:fade-out-0 tw:data-[state=closed]:slide-out-to-bottom-1/2 tw:data-[state=closed]:slide-out-to-right-1/2 tw:data-[state=closed]:zoom-out tw:data-[state=open]:fade-in-0 tw:data-[state=open]:slide-in-from-bottom-1/2 tw:data-[state=open]:slide-in-from-right-1/2 tw:data-[state=open]:zoom-in tw:z-50 tw:h-[500px] tw:w-[400px] tw:overflow-x-hidden tw:overscroll-contain tw:rounded-xl tw:border tw:border-input tw:bg-popover tw:p-0 tw:text-popover-foreground tw:shadow-sm tw:outline-none tw:data-[state=closed]:animate-out tw:data-[state=open]:animate-in tw:[&>.aui-thread-root]:bg-inherit"
+        sideOffset={isExpanded ? -40 :16 } 
+        className={cn(
+          "aui-root aui-modal-content tw:data-[state=closed]:fade-out-0 tw:data-[state=closed]:slide-out-to-bottom-1/2 tw:data-[state=closed]:slide-out-to-right-1/2 tw:data-[state=closed]:zoom-out tw:data-[state=open]:fade-in-0 tw:data-[state=open]:slide-in-from-bottom-1/2 tw:data-[state=open]:slide-in-from-right-1/2 tw:data-[state=open]:zoom-in tw:z-50 tw:overflow-x-hidden tw:overscroll-contain tw:rounded-xl tw:border tw:border-input tw:bg-popover tw:p-0 tw:text-popover-foreground tw:shadow-sm tw:outline-none tw:data-[state=closed]:animate-out tw:data-[state=open]:animate-in tw:[&>.aui-thread-root]:bg-inherit tw:relative tw:transition-all tw:duration-200",
+          isExpanded ? "tw:h-[calc(100dvh-40px)] tw:w-[calc(100dvw-30px)]" : "tw:h-[500px] tw:w-[400px]"
+        )}
       >
+        <div className="aui-modal-header tw:absolute tw:top-2 tw:left-2 tw:z-10">
+          <TooltipIconButton
+            tooltip={isExpanded ? "Reducir tamaño" : "Duplicar tamaño"}
+            variant="ghost"
+            size="icon"
+            className="aui-modal-expand tw:size-8 tw:rounded-md tw:bg-background/80 tw:backdrop-blur-sm tw:hover:bg-background"
+            onClick={() => setIsExpanded(!isExpanded)}
+          >
+            {isExpanded ? (
+              <Minimize2Icon className="tw:size-4" />
+            ) : (
+              <Maximize2Icon className="tw:size-4" />
+            )}
+          </TooltipIconButton>
+        </div>
         <Thread />
       </AssistantModalPrimitive.Content>
     </AssistantModalPrimitive.Root>
