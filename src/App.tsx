@@ -58,7 +58,7 @@ const adaptBackendMessagesToThreadMessages = (
 };
 
 function App() {
-  const [initialMessages, setInitialMessages] = useState<ThreadMessage[] | undefined>(undefined);
+  const [chatHistory, setChatHistory] = useState<ThreadMessage[] | undefined>(undefined);
   const [isLoadingHistory, setIsLoadingHistory] = useState(true);
   const sessionId = "3980a847-d6fa-4ad3-9602-08f65bd18f96";
 
@@ -82,7 +82,7 @@ function App() {
 
         const backendResponse: BackendResponse = await response.json();
         const threadMessages = adaptBackendMessagesToThreadMessages(backendResponse.mensajes);
-        setInitialMessages(threadMessages);
+        setChatHistory(threadMessages);
       } catch (error) {
         console.error("Error al cargar mensajes históricos:", error);
       } finally {
@@ -102,7 +102,9 @@ function App() {
       apiUrl="https://n8nnew.mpajujuy.gob.ar/webhook/chatbot"
       userId={4356}
       sessionId={sessionId}
-      initialMessages={initialMessages}
+      chatApi={{
+        chatHistory: chatHistory,
+      }}
     >
       <AssistantModal />
     </MyRuntimeProvider>

@@ -6,12 +6,49 @@ import {
   type ThreadMessage,
 } from "@assistant-ui/react";
 
+export interface ChatApi {
+  /**
+   * Chat history
+   * Array of messages converted to ThreadMessage format
+   */
+  chatHistory?: ThreadMessage[];
+  
+  /**
+   * Get the list of all chats for the user
+   * @returns Promise with the array of chats
+   */
+  getChatList?: () => Promise<Chat[]>;
+  
+  /**
+   * Create a new chat
+   * @returns Promise with the created chat
+   */
+  createChat?: () => Promise<Chat>;
+  
+  /**
+   * Delete a specific chat
+   * @param sessionId - ID of the chat to delete
+   * @returns Promise that resolves when the chat is deleted
+   */
+  deleteChat?: (sessionId: string) => Promise<void>;
+}
+
+// Interface to represent a chat
+export interface Chat {
+  id: string;
+  sessionId: string;
+  title?: string;
+  createdAt: string;
+  lastMessage?: string;
+  lastMessageAt?: string;
+}
+
 export interface RuntimeProviderProps {
   children: ReactNode;
   apiUrl: string;
   userId: number;
   sessionId: string;
-  initialMessages?: ThreadMessage[]; // Mensajes históricos opcionales
+  chatApi?: ChatApi;
 }
 
 // async function* backendApi({ messages, abortSignal, context, apiUrl }) {
@@ -146,10 +183,13 @@ export function MyRuntimeProvider({
   apiUrl,
   userId,
   sessionId,
-  initialMessages,
+  chatApi,
 }: Readonly<RuntimeProviderProps>) {
   const sessionIdValue = getSessionId(sessionId);
   const modelAdapter = createModelAdapter(apiUrl, userId, sessionIdValue);
+  
+  const initialMessages = chatApi?.chatHistory;
+
   const runtime = useLocalRuntime(modelAdapter, {
     initialMessages: initialMessages,
   });
