@@ -40,7 +40,7 @@ export const Thread: FC = () => {
       }}
     >
       <ThreadPrimitive.Viewport
-        turnAnchor="top"
+        turnAnchor="bottom"
         className="aui-thread-viewport tw:relative tw:flex tw:flex-1 tw:flex-col tw:overflow-x-hidden tw:overflow-y-scroll tw:scroll-smooth tw:px-4 tw:pt-4"
       >
         <AssistantIf condition={({ thread }) => thread.isEmpty}>

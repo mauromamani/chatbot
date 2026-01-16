@@ -11,6 +11,7 @@ export interface RuntimeProviderProps {
   apiUrl: string;
   userId: number;
   sessionId: string;
+  initialMessages?: ThreadMessage[]; // Mensajes históricos opcionales
 }
 
 // async function* backendApi({ messages, abortSignal, context, apiUrl }) {
@@ -145,10 +146,13 @@ export function MyRuntimeProvider({
   apiUrl,
   userId,
   sessionId,
+  initialMessages,
 }: Readonly<RuntimeProviderProps>) {
   const sessionIdValue = getSessionId(sessionId);
   const modelAdapter = createModelAdapter(apiUrl, userId, sessionIdValue);
-  const runtime = useLocalRuntime(modelAdapter);
+  const runtime = useLocalRuntime(modelAdapter, {
+    initialMessages: initialMessages,
+  });
 
   return (
     <AssistantRuntimeProvider runtime={runtime}>
