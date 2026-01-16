@@ -25,6 +25,11 @@ export const ChatSidebar: FC<ChatSidebarProps> = ({
   selectedSessionId,
   className,
 }) => {
+  const handleChatSelect = (sessionId: string) => {
+    if (selectedSessionId === sessionId) return;
+    onChatSelect?.(sessionId);
+  };
+
   return (
     <aside
       className={cn(
@@ -53,7 +58,7 @@ export const ChatSidebar: FC<ChatSidebarProps> = ({
             chats.map((chat) => (
               <div
                 key={chat.session_id}
-                onClick={() => onChatSelect?.(chat.session_id)}
+                onClick={() => handleChatSelect(chat.session_id)}
                 className={cn(
                   "tw:text-left tw:p-2 tw:rounded-md tw:transition-colors tw:flex tw:flex-col tw:gap-1 tw:group tw:cursor-pointer",
                   selectedSessionId === chat.session_id

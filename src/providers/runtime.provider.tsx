@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 import {
   AssistantRuntimeProvider,
   useLocalRuntime,
@@ -81,21 +81,12 @@ export interface RuntimeProviderProps {
 //   }
 // }
 
-// Función para obtener o generar un ID de sesión
-const getSessionId = (providedId?: string): string => {
-  if (providedId) {
-    return providedId;
+// Function to get session ID - always uses the provided sessionId prop
+const getSessionId = (providedId: string): string => {
+  if (!providedId) {
+    throw new Error("sessionId is required");
   }
-  
-  const storageKey = "chatbot_session_id";
-  let sessionId = localStorage.getItem(storageKey);
-  
-  if (!sessionId) {
-    sessionId = crypto.randomUUID();
-    localStorage.setItem(storageKey, sessionId);
-  }
-  
-  return sessionId;
+  return providedId;
 };
 
 // Función para extraer el mensaje del usuario del array de mensajes
@@ -185,8 +176,14 @@ export function MyRuntimeProvider({
   sessionId,
   chatApi,
 }: Readonly<RuntimeProviderProps>) {
+  // Always use the provided sessionId prop
   const sessionIdValue = getSessionId(sessionId);
-  const modelAdapter = createModelAdapter(apiUrl, userId, sessionIdValue);
+  
+  // Memoize modelAdapter to recreate only when dependencies change
+  const modelAdapter = useMemo(
+    () => createModelAdapter(apiUrl, userId, sessionIdValue),
+    [apiUrl, userId, sessionIdValue]
+  );
   
   const initialMessages = chatApi?.chatHistory;
 
