@@ -1,5 +1,8 @@
 // Export main components
 export { AssistantModal } from "./components/assistant-modal";
+export type { AssistantModalProps } from "./components/assistant-modal";
+export { ChatSidebar } from "./components/chat-sidebar";
+export type { ChatSidebarProps, ChatItem } from "./components/chat-sidebar";
 export { MyRuntimeProvider } from "./providers/runtime.provider";
 export type { RuntimeProviderProps } from "./providers/runtime.provider";
 

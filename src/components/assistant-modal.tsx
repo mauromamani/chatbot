@@ -7,9 +7,22 @@ import { AssistantModalPrimitive } from "@assistant-ui/react";
 
 import { Thread } from "@/components/thread";
 import { TooltipIconButton } from "@/components/tooltip-icon-button";
+import { ChatSidebar, type ChatItem } from "@/components/chat-sidebar";
 import { cn } from "@/lib/utils";
 
-export const AssistantModal: FC = () => {
+export interface AssistantModalProps {
+  chatList?: ChatItem[];
+  selectedSessionId?: string;
+  onNewChat?: () => void;
+  onChatSelect?: (sessionId: string) => void;
+}
+
+export const AssistantModal: FC<AssistantModalProps> = ({
+  chatList = [],
+  selectedSessionId,
+  onNewChat,
+  onChatSelect,
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -22,7 +35,7 @@ export const AssistantModal: FC = () => {
       <AssistantModalPrimitive.Content
         sideOffset={isExpanded ? -40 :16 } 
         className={cn(
-          "aui-root aui-modal-content tw:data-[state=closed]:fade-out-0 tw:data-[state=closed]:slide-out-to-bottom-1/2 tw:data-[state=closed]:slide-out-to-right-1/2 tw:data-[state=closed]:zoom-out tw:data-[state=open]:fade-in-0 tw:data-[state=open]:slide-in-from-bottom-1/2 tw:data-[state=open]:slide-in-from-right-1/2 tw:data-[state=open]:zoom-in tw:z-50 tw:overflow-x-hidden tw:overscroll-contain tw:rounded-xl tw:border tw:border-input tw:bg-popover tw:p-0 tw:text-popover-foreground tw:shadow-sm tw:outline-none tw:data-[state=closed]:animate-out tw:data-[state=open]:animate-in tw:[&>.aui-thread-root]:bg-inherit tw:relative tw:transition-all tw:duration-200",
+          "aui-root aui-modal-content tw:data-[state=closed]:fade-out-0 tw:data-[state=closed]:slide-out-to-bottom-1/2 tw:data-[state=closed]:slide-out-to-right-1/2 tw:data-[state=closed]:zoom-out tw:data-[state=open]:fade-in-0 tw:data-[state=open]:slide-in-from-bottom-1/2 tw:data-[state=open]:slide-in-from-right-1/2 tw:data-[state=open]:zoom-in tw:z-50 tw:overflow-x-hidden tw:overscroll-contain tw:rounded-xl tw:border tw:border-input tw:bg-popover tw:p-0 tw:text-popover-foreground tw:shadow-sm tw:outline-none tw:data-[state=closed]:animate-out tw:data-[state=open]:animate-in tw:[&>.aui-thread-root]:bg-inherit tw:relative tw:transition-all tw:duration-200 tw:flex",
           isExpanded ? "tw:h-[calc(100dvh-40px)] tw:w-[calc(100dvw-30px)]" : "tw:h-[500px] tw:w-[400px]"
         )}
       >
@@ -41,7 +54,21 @@ export const AssistantModal: FC = () => {
             )}
           </TooltipIconButton>
         </div>
-        <Thread />
+        
+        {isExpanded && (
+          <div className="tw:w-64 tw:shrink-0">
+            <ChatSidebar
+              chats={chatList}
+              selectedSessionId={selectedSessionId}
+              onNewChat={onNewChat}
+              onChatSelect={onChatSelect}
+            />
+          </div>
+        )}
+        
+        <div className="tw:flex-1 tw:min-w-0">
+          <Thread />
+        </div>
       </AssistantModalPrimitive.Content>
     </AssistantModalPrimitive.Root>
   );

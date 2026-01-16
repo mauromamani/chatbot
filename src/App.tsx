@@ -18,6 +18,10 @@ interface BackendResponse {
   mensajes: BackendMessage[];
 }
 
+interface ChatListResponse {
+  ids_sesion: string[];
+}
+
 // Función adapter para convertir mensajes del backend al formato ThreadMessage
 const adaptBackendMessagesToThreadMessages = (
   backendMessages: BackendMessage[]
@@ -60,8 +64,12 @@ const adaptBackendMessagesToThreadMessages = (
 function App() {
   const [chatHistory, setChatHistory] = useState<ThreadMessage[] | undefined>(undefined);
   const [isLoadingHistory, setIsLoadingHistory] = useState(true);
+  const [chatList, setChatList] = useState<Array<{ session_id: string; name: string }>>([]);
+  const [isLoadingChatList, setIsLoadingChatList] = useState(true);
+  const userId = 4356;
   const sessionId = "3980a847-d6fa-4ad3-9602-08f65bd18f96";
 
+  // Load chat history for current session
   useEffect(() => {
     const loadHistory = async () => {
       try {
@@ -93,20 +101,65 @@ function App() {
     loadHistory();
   }, [sessionId]);
 
-  if (isLoadingHistory) {
+  // Load chat list for user
+  useEffect(() => {
+    const loadChatList = async () => {
+      try {
+        const url = `https://n8nnew.mpajujuy.gob.ar/webhook/4bdfa13f-8b20-450e-97c2-652092b739d4/chatbot/conversacion/recuperar-por-id-usuario/${userId}`;
+        
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          console.error(`Error al cargar lista de chats: ${response.status}`);
+          setIsLoadingChatList(false);
+          return;
+        }
+
+        const chatListResponse: ChatListResponse = await response.json();
+        // Transform response to {session_id: string, name: string}[]
+        const transformedChatList = chatListResponse.ids_sesion.map((id_sesion) => ({
+          session_id: id_sesion,
+          name: id_sesion,
+        }));
+        setChatList(transformedChatList);
+      } catch (error) {
+        console.error("Error al cargar lista de chats:", error);
+      } finally {
+        setIsLoadingChatList(false);
+      }
+    };
+
+    loadChatList();
+  }, [userId]);
+
+  if (isLoadingHistory || isLoadingChatList) {
     return <div>Cargando historial...</div>;
   }
 
   return (
     <MyRuntimeProvider 
       apiUrl="https://n8nnew.mpajujuy.gob.ar/webhook/chatbot"
-      userId={4356}
+      userId={userId}
       sessionId={sessionId}
       chatApi={{
         chatHistory: chatHistory,
       }}
     >
-      <AssistantModal />
+      <AssistantModal
+        chatList={chatList}
+        selectedSessionId={sessionId}
+        onNewChat={() => {
+          console.log("New chat clicked");
+        }}
+        onChatSelect={(selectedSessionId) => {
+          console.log("Chat selected:", selectedSessionId);
+        }}
+      />
     </MyRuntimeProvider>
   );
 }
