@@ -1,4 +1,4 @@
-import { useMemo, type ReactNode } from "react";
+import { useEffect, useMemo, type ReactNode } from "react";
 import {
   AssistantRuntimeProvider,
   useLocalRuntime,
@@ -185,11 +185,16 @@ export function MyRuntimeProvider({
     [apiUrl, userId, sessionIdValue]
   );
   
-  const initialMessages = chatApi?.chatHistory;
+  // Create runtime without initial messages - we'll update them via reset()
+  const runtime = useLocalRuntime(modelAdapter);
 
-  const runtime = useLocalRuntime(modelAdapter, {
-    initialMessages: initialMessages,
-  });
+  // Update thread messages when chatHistory or sessionId changes
+  useEffect(() => {
+    const messages = chatApi?.chatHistory;
+    // Reset thread with new messages (empty array clears the thread)
+    runtime.thread.reset(messages ?? []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chatApi?.chatHistory, sessionId]);
 
   return (
     <AssistantRuntimeProvider runtime={runtime}>

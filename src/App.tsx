@@ -140,7 +140,8 @@ function App() {
     loadChatList();
   }, [userId]);
 
-  if (isLoadingHistory || isLoadingChatList) {
+  // Only block initial load, not when switching chats
+  if (isLoadingChatList) {
     return <div>Cargando historial...</div>;
   }
 
@@ -156,6 +157,7 @@ function App() {
       <AssistantModal
         chatList={chatList}
         selectedSessionId={sessionId}
+        isLoadingHistory={isLoadingHistory}
         onNewChat={() => {
           console.log("New chat clicked");
         }}

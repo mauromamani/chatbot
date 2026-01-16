@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 export interface AssistantModalProps {
   chatList?: ChatItem[];
   selectedSessionId?: string;
+  isLoadingHistory?: boolean;
   onNewChat?: () => void;
   onChatSelect?: (sessionId: string) => void;
 }
@@ -20,6 +21,7 @@ export interface AssistantModalProps {
 export const AssistantModal: FC<AssistantModalProps> = ({
   chatList = [],
   selectedSessionId,
+  isLoadingHistory = false,
   onNewChat,
   onChatSelect,
 }) => {
@@ -67,7 +69,7 @@ export const AssistantModal: FC<AssistantModalProps> = ({
         )}
         
         <div className="tw:flex-1 tw:min-w-0">
-          <Thread />
+          <Thread isLoadingHistory={isLoadingHistory} />
         </div>
       </AssistantModalPrimitive.Content>
     </AssistantModalPrimitive.Root>

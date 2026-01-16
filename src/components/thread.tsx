@@ -25,13 +25,18 @@ import {
   ChevronRightIcon,
   CopyIcon,
   DownloadIcon,
+  Loader2Icon,
   PencilIcon,
   RefreshCwIcon,
   SquareIcon,
 } from "lucide-react";
 import type { FC } from "react";
 
-export const Thread: FC = () => {
+export interface ThreadProps {
+  isLoadingHistory?: boolean;
+}
+
+export const Thread: FC<ThreadProps> = ({ isLoadingHistory = false }) => {
   return (
     <ThreadPrimitive.Root
       className="aui-root aui-thread-root tw:@container tw:flex tw:h-full tw:flex-col tw:bg-background"
@@ -43,17 +48,26 @@ export const Thread: FC = () => {
         turnAnchor="bottom"
         className="aui-thread-viewport tw:relative tw:flex tw:flex-1 tw:flex-col tw:overflow-x-hidden tw:overflow-y-scroll tw:scroll-smooth tw:px-4 tw:pt-4"
       >
-        <AssistantIf condition={({ thread }) => thread.isEmpty}>
-          <ThreadWelcome />
-        </AssistantIf>
+        {isLoadingHistory ? (
+          <div className="aui-thread-loading tw:mx-auto tw:my-auto tw:flex tw:w-full tw:max-w-(--thread-max-width) tw:flex-col tw:items-center tw:justify-center tw:gap-2">
+            <Loader2Icon className="tw:size-6 tw:animate-spin tw:text-muted-foreground" />
+            <p className="tw:text-sm tw:text-muted-foreground">Cargando conversación...</p>
+          </div>
+        ) : (
+          <>
+            <AssistantIf condition={({ thread }) => thread.isEmpty}>
+              <ThreadWelcome />
+            </AssistantIf>
 
-        <ThreadPrimitive.Messages
-          components={{
-            UserMessage,
-            EditComposer,
-            AssistantMessage,
-          }}
-        />
+            <ThreadPrimitive.Messages
+              components={{
+                UserMessage,
+                EditComposer,
+                AssistantMessage,
+              }}
+            />
+          </>
+        )}
 
         <ThreadPrimitive.ViewportFooter className="aui-thread-viewport-footer tw:sticky tw:bottom-0 tw:mx-auto tw:mt-auto tw:flex tw:w-full tw:max-w-(--thread-max-width) tw:flex-col tw:gap-4 tw:overflow-visible tw:rounded-t-3xl tw:bg-background tw:pb-4 tw:md:pb-6">
           <ThreadScrollToBottom />
