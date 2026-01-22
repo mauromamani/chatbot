@@ -18,9 +18,30 @@ interface BackendResponse {
   mensajes: BackendMessage[];
 }
 
-interface ChatListResponse {
-  ids_sesion: string[];
+interface Conversacion {
+  id: number;
+  id_sesion: string;
+  titulo: string;
 }
+
+interface ChatListResponse {
+  conversaciones: Conversacion[];
+}
+
+// SessionStorage key for storing session ID
+const SESSION_STORAGE_KEY = "chatbot_session_id";
+
+// Function to get session ID from sessionStorage or generate a new one
+const getInitialSessionId = (): string => {
+  const storedSessionId = sessionStorage.getItem(SESSION_STORAGE_KEY);
+  if (storedSessionId) {
+    return storedSessionId;
+  }
+  // If no session ID exists, generate a new one (new chat)
+  const newSessionId = crypto.randomUUID();
+  sessionStorage.setItem(SESSION_STORAGE_KEY, newSessionId);
+  return newSessionId;
+};
 
 // Función adapter para convertir mensajes del backend al formato ThreadMessage
 const adaptBackendMessagesToThreadMessages = (
@@ -64,16 +85,16 @@ const adaptBackendMessagesToThreadMessages = (
 function App() {
   const [chatHistory, setChatHistory] = useState<ThreadMessage[] | undefined>(undefined);
   const [isLoadingHistory, setIsLoadingHistory] = useState(true);
-  const [chatList, setChatList] = useState<Array<{ session_id: string; name: string }>>([]);
+  const [chatList, setChatList] = useState<Array<{ session_id: string; name: string, id: number }>>([]);
   const [isLoadingChatList, setIsLoadingChatList] = useState(true);
   const userId = 4356;
-  const [sessionId, setSessionId] = useState<string>("3980a847-d6fa-4ad3-9602-08f65bd18f96");
+  const [sessionId, setSessionId] = useState<string>(() => getInitialSessionId());
 
   // Function to load chat history for a given session
   const loadHistory = useCallback(async (targetSessionId: string) => {
     setIsLoadingHistory(true);
     try {
-      const url = `https://n8nnew.mpajujuy.gob.ar/webhook/b57eb0cf-1892-4b54-a479-e99c2792ea77/chatbot/mensaje/recuperar-por-id-sesion/${targetSessionId}`;
+      const url = `https://n8nnew.mpajujuy.gob.ar/webhook/b57eb0cf-1892-4b54-a479-e99c2792ea77/chatbot/mensaje/recuperar-por-id-sesion/${targetSessionId}?pagina=1&cantidad=10`;
       
       const response = await fetch(url, {
         method: "GET",
@@ -89,7 +110,7 @@ function App() {
       }
 
       const backendResponse: BackendResponse = await response.json();
-      const threadMessages = adaptBackendMessagesToThreadMessages(backendResponse.mensajes);
+      const threadMessages = adaptBackendMessagesToThreadMessages(backendResponse.mensajes).reverse();
       // Replace previous messages with new ones
       setChatHistory(threadMessages);
     } catch (error) {
@@ -97,6 +118,22 @@ function App() {
     } finally {
       setIsLoadingHistory(false);
     }
+  }, []);
+
+  // Function to handle new chat creation
+  const handleNewChat = useCallback(() => {
+    // Generate new UUID for session
+    const newSessionId = crypto.randomUUID();
+    
+    // Clear previous messages immediately
+    setChatHistory([]);
+    
+    // Save new session ID to sessionStorage
+    sessionStorage.setItem(SESSION_STORAGE_KEY, newSessionId);
+    
+    // Update session ID - this will trigger useEffect to load history
+    // but since it's a new chat, it will likely return empty array
+    setSessionId(newSessionId);
   }, []);
 
   // Load chat history for current session
@@ -124,10 +161,11 @@ function App() {
         }
 
         const chatListResponse: ChatListResponse = await response.json();
-        // Transform response to {session_id: string, name: string}[]
-        const transformedChatList = chatListResponse.ids_sesion.map((id_sesion) => ({
-          session_id: id_sesion,
-          name: id_sesion,
+        // Transform response to {session_id: string, name: string, id: string}[]
+        const transformedChatList = chatListResponse.conversaciones.map((conversacion) => ({
+          session_id: conversacion.id_sesion,
+          name: conversacion.titulo,
+          id: conversacion.id,
         }));
         setChatList(transformedChatList);
       } catch (error) {
@@ -158,10 +196,10 @@ function App() {
         chatList={chatList}
         selectedSessionId={sessionId}
         isLoadingHistory={isLoadingHistory}
-        onNewChat={() => {
-          console.log("New chat clicked");
-        }}
+        onNewChat={handleNewChat}
         onChatSelect={(selectedSessionId) => {
+          // Save selected session ID to sessionStorage
+          sessionStorage.setItem(SESSION_STORAGE_KEY, selectedSessionId);
           // Update session ID - useEffect will automatically load the history
           setSessionId(selectedSessionId);
         }}
