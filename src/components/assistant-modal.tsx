@@ -16,6 +16,7 @@ export interface AssistantModalProps {
   isLoadingHistory?: boolean;
   onNewChat?: () => void;
   onChatSelect?: (sessionId: string) => void;
+  onDeleteChat?: (conversationId: number) => Promise<void>;
 }
 
 export const AssistantModal: FC<AssistantModalProps> = ({
@@ -24,6 +25,7 @@ export const AssistantModal: FC<AssistantModalProps> = ({
   isLoadingHistory = false,
   onNewChat,
   onChatSelect,
+  onDeleteChat,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -64,6 +66,7 @@ export const AssistantModal: FC<AssistantModalProps> = ({
               selectedSessionId={selectedSessionId}
               onNewChat={onNewChat}
               onChatSelect={onChatSelect}
+              onDeleteChat={onDeleteChat}
             />
           </div>
         )}

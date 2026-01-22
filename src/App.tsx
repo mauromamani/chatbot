@@ -141,42 +141,74 @@ function App() {
     loadHistory(sessionId);
   }, [sessionId, loadHistory]);
 
+  // Function to load chat list for user
+  const loadChatList = useCallback(async () => {
+    try {
+      const url = `https://n8nnew.mpajujuy.gob.ar/webhook/4bdfa13f-8b20-450e-97c2-652092b739d4/chatbot/conversacion/recuperar-por-id-usuario/${userId}`;
+      
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        console.error(`Error al cargar lista de chats: ${response.status}`);
+        setIsLoadingChatList(false);
+        return;
+      }
+
+      const chatListResponse: ChatListResponse = await response.json();
+      // Transform response to {session_id: string, name: string, id: number}[]
+      const transformedChatList = chatListResponse.conversaciones.map((conversacion) => ({
+        session_id: conversacion.id_sesion,
+        name: conversacion.titulo,
+        id: conversacion.id,
+      }));
+      setChatList(transformedChatList);
+    } catch (error) {
+      console.error("Error al cargar lista de chats:", error);
+    } finally {
+      setIsLoadingChatList(false);
+    }
+  }, [userId]);
+
+  // Function to handle chat deletion
+  const handleDeleteChat = useCallback(async (conversationId: number) => {
+    try {
+      const url = `https://n8nnew.mpajujuy.gob.ar/webhook/2d1ed74a-5480-44ce-9f63-6b527ae2287c/chatbot/conversacion/borrar/${conversationId}`;
+      
+      const response = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        console.error(`Error al eliminar conversación: ${response.status}`);
+        throw new Error("Error al eliminar conversación");
+      }
+
+      // Reload chat list after successful deletion
+      await loadChatList();
+      
+      // If the deleted chat was the current session, create a new chat
+      const deletedChat = chatList.find(chat => chat.id === conversationId);
+      if (deletedChat && deletedChat.session_id === sessionId) {
+        handleNewChat();
+      }
+    } catch (error) {
+      console.error("Error al eliminar conversación:", error);
+      throw error;
+    }
+  }, [chatList, sessionId, loadChatList, handleNewChat]);
+
   // Load chat list for user
   useEffect(() => {
-    const loadChatList = async () => {
-      try {
-        const url = `https://n8nnew.mpajujuy.gob.ar/webhook/4bdfa13f-8b20-450e-97c2-652092b739d4/chatbot/conversacion/recuperar-por-id-usuario/${userId}`;
-        
-        const response = await fetch(url, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (!response.ok) {
-          console.error(`Error al cargar lista de chats: ${response.status}`);
-          setIsLoadingChatList(false);
-          return;
-        }
-
-        const chatListResponse: ChatListResponse = await response.json();
-        // Transform response to {session_id: string, name: string, id: string}[]
-        const transformedChatList = chatListResponse.conversaciones.map((conversacion) => ({
-          session_id: conversacion.id_sesion,
-          name: conversacion.titulo,
-          id: conversacion.id,
-        }));
-        setChatList(transformedChatList);
-      } catch (error) {
-        console.error("Error al cargar lista de chats:", error);
-      } finally {
-        setIsLoadingChatList(false);
-      }
-    };
-
     loadChatList();
-  }, [userId]);
+  }, [loadChatList]);
 
   // Only block initial load, not when switching chats
   if (isLoadingChatList) {
@@ -203,6 +235,7 @@ function App() {
           // Update session ID - useEffect will automatically load the history
           setSessionId(selectedSessionId);
         }}
+        onDeleteChat={handleDeleteChat}
       />
     </MyRuntimeProvider>
   );
