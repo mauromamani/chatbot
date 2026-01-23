@@ -24,6 +24,7 @@ export default defineConfig({
         'react',
         'react-dom',
         'react/jsx-runtime',
+        '@tanstack/react-query',
         '@assistant-ui/react',
         '@assistant-ui/react-markdown',
         '@radix-ui/react-avatar',

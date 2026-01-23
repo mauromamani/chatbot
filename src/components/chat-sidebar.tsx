@@ -97,10 +97,12 @@ export const ChatSidebar: FC<ChatSidebarProps> = ({
                 {onDeleteChat && (
                   <Popover open={openPopoverId === chat.id} onOpenChange={(open) => setOpenPopoverId(open ? chat.id : null)}>
                     <PopoverAnchor asChild>
-                      <button
+                      <Button
                         type="button"
+                        variant="outline"
+                        size="icon"
                         className={cn(
-                          "tw:size-6 tw:opacity-0 tw:group-hover:opacity-100 tw:transition-opacity tw:shrink-0 tw:flex tw:items-center tw:justify-center tw:rounded-md tw:hover:bg-accent/50 tw:cursor-pointer tw:outline-none tw:focus-visible:ring-2 tw:focus-visible:ring-ring",
+                          'tw:size-6 tw:opacity-0 tw:group-hover:opacity-100 tw:transition-opacity tw:shrink-0 tw:border-none tw:bg-transparent',
                           selectedSessionId === chat.session_id && "tw:text-primary-foreground"
                         )}
                         onClick={(e) => {
@@ -108,8 +110,8 @@ export const ChatSidebar: FC<ChatSidebarProps> = ({
                           setOpenPopoverId(openPopoverId === chat.id ? null : chat.id);
                         }}
                       >
-                        <Trash2Icon className="tw:size-3" />
-                      </button>
+                        <Trash2Icon className="tw:size-3 tw:text-destructive" />
+                      </Button>
                     </PopoverAnchor>
                     <PopoverContent 
                       className="tw:w-56 tw:z-50" 
