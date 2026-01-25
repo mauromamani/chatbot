@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { AssistantModal } from "./assistant-modal";
 import { MyRuntimeProvider } from "../providers/runtime.provider";
 import { ChatbotQueryClientProvider } from "../providers/query-client.provider";
@@ -86,7 +86,7 @@ function ChatbotContent({
   apiUrls,
   userId,
   initialSessionId,
-  sessionStorageKey,
+  sessionStorageKey = "chatbot_session_id",
 }: Omit<ChatbotProps, "queryClient">) {
   // Get initial session ID
   const [sessionId, setSessionId] = useState<string>(() =>
@@ -97,7 +97,8 @@ function ChatbotContent({
   const {
     data: chatHistory,
     isLoading: isLoadingHistory,
-    refetch: refetchHistory,
+    ref: historyScrollRef,
+    isFetchingNextPage,
   } = useChatHistory({
     sessionId,
     apiUrl: apiUrls.chatHistory,
@@ -157,12 +158,7 @@ function ChatbotContent({
     [chatList, sessionId, deleteChatMutation, handleNewChat]
   );
 
-  // Refetch history when sessionId changes
-  useEffect(() => {
-    if (sessionId) {
-      refetchHistory();
-    }
-  }, [sessionId, refetchHistory]);
+  // Note: History will automatically refetch when sessionId changes due to queryKey dependency
 
   // Show loading state only on initial load
   if (isLoadingChatList && chatList.length === 0) {
@@ -182,6 +178,8 @@ function ChatbotContent({
         chatList={chatList}
         selectedSessionId={sessionId}
         isLoadingHistory={isLoadingHistory}
+        historyScrollRef={historyScrollRef}
+        isFetchingNextPage={isFetchingNextPage}
         onNewChat={handleNewChat}
         onChatSelect={handleChatSelect}
         onDeleteChat={handleDeleteChat}

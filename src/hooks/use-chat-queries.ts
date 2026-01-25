@@ -1,4 +1,6 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
+import { useEffect, useMemo } from "react";
+import { useInView } from "react-intersection-observer";
 import type { ThreadMessage } from "@assistant-ui/react";
 
 // Tipos para los mensajes del backend
@@ -14,6 +16,14 @@ export interface BackendMessage {
 
 export interface BackendResponse {
   mensajes: BackendMessage[];
+  paginacion: {
+    total_mensajes: string;
+    total_paginas: number;
+    pagina_actual: number;
+    cantidad: number;
+    tiene_anterior: boolean;
+    tiene_siguiente: boolean;
+  };
 }
 
 export interface Conversacion {
@@ -83,18 +93,26 @@ export interface UseChatHistoryOptions {
 }
 
 /**
- * Hook para cargar el historial de mensajes de una sesión de chat
+ * Hook para cargar el historial de mensajes de una sesión de chat con scroll infinito
  */
 export function useChatHistory({
   sessionId,
   apiUrl,
   enabled = true,
 }: UseChatHistoryOptions) {
-  return useQuery({
+  const cantidadPorPagina = 30;
+
+  const {
+    data: historyData,
+    fetchNextPage,
+    hasNextPage,
+    isLoading,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
     queryKey: ["chatHistory", sessionId],
-    queryFn: async (): Promise<ThreadMessage[]> => {
+    queryFn: async ({ pageParam = 1 }): Promise<BackendResponse> => {
       // Construct URL - apiUrl should be the base URL, we append sessionId and query params
-      const url = `${apiUrl}/${sessionId}?pagina=1&cantidad=10`;
+      const url = `${apiUrl}/${sessionId}?pagina=${pageParam}&cantidad=${cantidadPorPagina}`;
 
       const response = await fetch(url, {
         method: "GET",
@@ -107,13 +125,50 @@ export function useChatHistory({
         throw new Error(`Error al cargar historial: ${response.status}`);
       }
 
-      const backendResponse: BackendResponse = await response.json();
-      return adaptBackendMessagesToThreadMessages(
-        backendResponse.mensajes
-      ).reverse();
+      return await response.json();
+    },
+    getNextPageParam: (lastPage) => {
+      // Usar tiene_siguiente para determinar si hay más páginas
+      if (lastPage.paginacion?.tiene_siguiente && lastPage.mensajes.length > 0) {
+        return lastPage.paginacion.pagina_actual + 1;
+      }
+      return undefined;
     },
     enabled: enabled && !!sessionId,
+    initialPageParam: 1,
   });
+
+  const { ref, inView } = useInView({
+    threshold: 0,
+  });
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage]);
+
+  // Aplanar todas las páginas y adaptar los mensajes
+  const chatHistory = useMemo(() => {
+    if (!historyData?.pages) {
+      return [];
+    }
+
+    // Aplanar todos los mensajes de todas las páginas
+    const allMessages = historyData.pages.flatMap((page) => page.mensajes);
+    
+    // Adaptar y revertir el orden (los más antiguos primero)
+    return adaptBackendMessagesToThreadMessages(allMessages).reverse();
+  }, [historyData]);
+
+  return {
+    data: chatHistory,
+    isLoading,
+    isFetchingNextPage,
+    ref,
+    hasNextPage,
+    fetchNextPage,
+  };
 }
 
 export interface UseChatListOptions {
