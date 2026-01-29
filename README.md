@@ -4,100 +4,98 @@ Una librería de componentes React para crear chatbots con interfaz de usuario m
 
 ## Instalación
 
-```bash
-npm install @mauromamani/ai-chatbot
-```
+Esta librería está publicada en GitHub Packages. Para instalarla, necesitas configurar npm para usar GitHub Packages como registro.
 
-## Uso
+### Configuración inicial (solo la primera vez)
 
-### Instalación de dependencias peer
+1. **Crear un Personal Access Token (PAT) en GitHub:**
+   - Ve a GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
+   - Genera un nuevo token con permisos `read:packages` (y `repo` si el repositorio es privado)
+   - Copia el token generado
 
-Asegúrate de tener React 18 instalado en tu proyecto:
+2. **Configurar npm para usar GitHub Packages:**
 
-```bash
-npm install react@^18.2.0 react-dom@^18.2.0
-```
+   Crea o edita el archivo `.npmrc` en la raíz de tu proyecto (donde está el `package.json`):
 
-### Uso básico
+   ```
+   @mauromamani:registry=https://npm.pkg.github.com
+   //npm.pkg.github.com/:_authToken=TU_TOKEN_AQUI
+   ```
 
-```tsx
-import { AssistantModal, MyRuntimeProvider } from '@mauromamani/ai-chatbot';
-import '@mauromamani/ai-chatbot/style.css';
+3. **Instalar la librería:**
 
-function App() {
-  return (
-    <MyRuntimeProvider apiUrl="http://localhost:3001/api/chat">
-      <AssistantModal />
-    </MyRuntimeProvider>
-  );
-}
-```
+   ```bash
+   npm install @mauromamani/ai-chatbot
+   ```
 
-### Configuración del API
+### Requisitos de acceso
 
-El componente `MyRuntimeProvider` requiere una URL de API que maneje las solicitudes de chat. La API debe aceptar POST requests con el siguiente formato:
+- Debes tener acceso al repositorio privado `mauromamani/chatbot` en GitHub
+- Tu token debe tener permisos `read:packages` (y `repo` si el repositorio es privado)
 
-```json
-{
-  "messages": [
-    {
-      "role": "user",
-      "content": "Hola"
-    }
-  ]
-}
-```
+## Publicación en GitHub Packages
 
-Y debe responder con:
+Para publicar nuevas versiones de la librería en GitHub Packages:
 
-```json
-{
-  "text": "Respuesta del chatbot"
-}
-```
+### Configuración inicial (solo la primera vez)
 
-### Personalización
+1. **Crear un Personal Access Token (PAT) en GitHub:**
+   - Ve a GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
+   - Genera un nuevo token con permisos `write:packages` y `repo`
+   - Copia el token generado
 
-Puedes importar componentes UI individuales para personalizar la apariencia:
+2. **Configurar el archivo `.npmrc` local:**
 
-```tsx
-import { Button, Dialog, Avatar } from '@mauromamani/ai-chatbot';
-```
+   Copia el archivo `.npmrc.example` a `.npmrc`:
+   ```bash
+   cp .npmrc.example .npmrc
+   ```
 
-### Estilos CSS
+   O crea manualmente `.npmrc` en la raíz del proyecto:
+   ```
+   @mauromamani:registry=https://npm.pkg.github.com
+   //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
+   ```
 
-Los estilos están incluidos en el paquete y se importan automáticamente cuando importas los componentes. Si necesitas importar los estilos manualmente:
+   **⚠️ Importante:** El archivo `.npmrc` está en `.gitignore` y NO debe subirse al repositorio.
 
-```tsx
-import '@mauromamani/ai-chatbot/style.css';
-```
+3. **Configurar la variable de entorno:**
 
-**Nota importante sobre Tailwind CSS**: Esta librería usa Tailwind CSS v4 con prefijo `tw:`. Los estilos están compilados en el CSS final, pero si tu proyecto también usa Tailwind CSS, asegúrate de que no haya conflictos. Los estilos de la librería están prefijados con `tw:`, por lo que no deberían interferir con tus estilos personalizados.
+   ```bash
+   # Windows (PowerShell)
+   $env:GITHUB_TOKEN="tu_token_aqui"
+   
+   # Windows (CMD)
+   set GITHUB_TOKEN=tu_token_aqui
+   
+   # Linux/Mac
+   export GITHUB_TOKEN=tu_token_aqui
+   ```
 
-## Requisitos
+### Publicar una nueva versión
 
-- React ^18.2.0
-- React DOM ^18.2.0
+1. **Actualizar la versión en `package.json`:**
+   ```bash
+   npm version patch  # Para 1.0.0 → 1.0.1
+   npm version minor  # Para 1.0.0 → 1.1.0
+   npm version major  # Para 1.0.0 → 2.0.0
+   ```
 
-## Desarrollo
+2. **Construir y publicar:**
+   ```bash
+   npm run build
+   npm publish
+   ```
 
-```bash
-# Instalar dependencias
-npm install
+   El script `prepublishOnly` ejecutará automáticamente el build antes de publicar.
 
-# Modo desarrollo
-npm run dev
+3. **Verificar la publicación:**
 
-# Construir librería
-npm run build
-
-# Linting
-npm run lint
-```
+   Ve a `https://github.com/mauromamani/chatbot/packages` para ver el paquete publicado.
 
 ## Publicación local (para desarrollo)
 
-Para usar esta librería localmente en tu proyecto antes de publicarla en npm:
+Para usar esta librería localmente en tu proyecto antes de publicarla:
 
 1. Construye la librería:
 ```bash

@@ -1,0 +1,6 @@
+# Configuración para publicar en GitHub Packages
+# Copia este archivo a .npmrc y reemplaza ${GITHUB_TOKEN} con tu token real
+# O configura la variable de entorno GITHUB_TOKEN antes de publicar
+
+@mauromamani:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
