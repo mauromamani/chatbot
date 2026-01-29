@@ -14,6 +14,8 @@ export interface AssistantModalProps {
   chatList?: ChatItem[];
   selectedSessionId?: string;
   isLoadingHistory?: boolean;
+  historyScrollRef?: (node: HTMLDivElement | null) => void;
+  isFetchingNextPage?: boolean;
   onNewChat?: () => void;
   onChatSelect?: (sessionId: string) => void;
   onDeleteChat?: (conversationId: number) => Promise<void>;
@@ -23,6 +25,8 @@ export const AssistantModal: FC<AssistantModalProps> = ({
   chatList = [],
   selectedSessionId,
   isLoadingHistory = false,
+  historyScrollRef,
+  isFetchingNextPage = false,
   onNewChat,
   onChatSelect,
   onDeleteChat,
@@ -72,7 +76,11 @@ export const AssistantModal: FC<AssistantModalProps> = ({
         )}
         
         <div className="tw:flex-1 tw:min-w-0">
-          <Thread isLoadingHistory={isLoadingHistory} />
+          <Thread 
+            isLoadingHistory={isLoadingHistory} 
+            historyScrollRef={historyScrollRef}
+            isFetchingNextPage={isFetchingNextPage}
+          />
         </div>
       </AssistantModalPrimitive.Content>
     </AssistantModalPrimitive.Root>

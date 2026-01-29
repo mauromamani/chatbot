@@ -3,7 +3,14 @@
 import { PlusIcon, MessageSquareIcon, Trash2Icon } from "lucide-react";
 import { type FC, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverAnchor } from "@/components/ui/popover";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
 export interface ChatItem {
@@ -30,21 +37,20 @@ export const ChatSidebar: FC<ChatSidebarProps> = ({
   className,
 }) => {
   const [deletingId, setDeletingId] = useState<number | null>(null);
-  const [openPopoverId, setOpenPopoverId] = useState<number | null>(null);
+  const [openDialogId, setOpenDialogId] = useState<number | null>(null);
 
   const handleChatSelect = (sessionId: string) => {
     if (selectedSessionId === sessionId) return;
     onChatSelect?.(sessionId);
   };
 
-  const handleDeleteClick = async (conversationId: number, e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleDeleteClick = async (conversationId: number) => {
     if (!onDeleteChat) return;
     
     try {
       setDeletingId(conversationId);
       await onDeleteChat(conversationId);
-      setOpenPopoverId(null);
+      setOpenDialogId(null);
     } catch (error) {
       console.error("Error al eliminar conversación:", error);
     } finally {
@@ -82,7 +88,7 @@ export const ChatSidebar: FC<ChatSidebarProps> = ({
                 key={chat.session_id}
                 onClick={() => handleChatSelect(chat.session_id)}
                 className={cn(
-                  "tw:text-left tw:p-2 tw:rounded-md tw:transition-colors tw:flex tw:items-center tw:gap-2 tw:group tw:cursor-pointer",
+                  "tw:relative tw:text-left tw:p-2 tw:rounded-md tw:transition-colors tw:flex tw:items-center tw:gap-2 tw:group tw:cursor-pointer",
                   selectedSessionId === chat.session_id
                     ? "tw:bg-primary tw:text-primary-foreground"
                     : "tw:hover:bg-accent tw:text-foreground"
@@ -95,60 +101,54 @@ export const ChatSidebar: FC<ChatSidebarProps> = ({
                   </div>
                 </div>
                 {onDeleteChat && (
-                  <Popover open={openPopoverId === chat.id} onOpenChange={(open) => setOpenPopoverId(open ? chat.id : null)}>
-                    <PopoverAnchor asChild>
-                      <button
-                        type="button"
-                        className={cn(
-                          "tw:size-6 tw:opacity-0 tw:group-hover:opacity-100 tw:transition-opacity tw:shrink-0 tw:flex tw:items-center tw:justify-center tw:rounded-md tw:hover:bg-accent/50 tw:cursor-pointer tw:outline-none tw:focus-visible:ring-2 tw:focus-visible:ring-ring",
-                          selectedSessionId === chat.session_id && "tw:text-primary-foreground"
-                        )}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setOpenPopoverId(openPopoverId === chat.id ? null : chat.id);
-                        }}
-                      >
-                        <Trash2Icon className="tw:size-3" />
-                      </button>
-                    </PopoverAnchor>
-                    <PopoverContent 
-                      className="tw:w-56 tw:z-50" 
-                      onClick={(e) => e.stopPropagation()}
-                      onOpenAutoFocus={(e) => e.preventDefault()}
-                      side="left"
-                      align="end"
+                  <>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      className={cn(
+                        'tw:size-6 tw:opacity-0 tw:group-hover:opacity-100 tw:transition-opacity tw:shrink-0 tw:border-none tw:bg-transparent tw:absolute tw:right-1.5 tw:top-1.5 tw:z-20',
+                        selectedSessionId === chat.session_id && "tw:text-primary-foreground"
+                      )}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenDialogId(chat.id);
+                      }}
                     >
-                      <div className="tw:space-y-3">
-                        <div className="tw:text-sm">
-                          ¿Desea eliminar esta conversación?
-                        </div>
-                        <div className="tw:flex tw:gap-2 tw:justify-end">
+                      <Trash2Icon className="tw:size-3 tw:text-destructive" />
+                    </Button>
+                    <Dialog open={openDialogId === chat.id} onOpenChange={(open) => setOpenDialogId(open ? chat.id : null)} modal={true}>
+                      <DialogContent 
+                        className="tw:z-[10000000000000000000] tw:border-gray-100" 
+                        onClick={(e) => e.stopPropagation()}
+                        showCloseButton={false}
+                      >
+                        <DialogHeader>
+                          <DialogTitle>Eliminar conversación</DialogTitle>
+                          <DialogDescription>
+                            ¿Está seguro de que desea eliminar esta conversación? Esta acción no se puede deshacer.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
                           <Button
                             variant="outline"
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setOpenPopoverId(null);
-                            }}
+                            onClick={() => setOpenDialogId(null)}
                             disabled={deletingId === chat.id}
                           >
                             Cancelar
                           </Button>
                           <Button
                             variant="destructive"
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteClick(chat.id, e);
-                            }}
+                            className="tw:border-0"
+                            onClick={() => handleDeleteClick(chat.id)}
                             disabled={deletingId === chat.id}
                           >
                             {deletingId === chat.id ? "Eliminando..." : "Eliminar"}
                           </Button>
-                        </div>
-                      </div>
-                    </PopoverContent>
-                  </Popover>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </>
                 )}
               </div>
             ))

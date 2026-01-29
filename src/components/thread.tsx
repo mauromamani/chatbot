@@ -34,9 +34,15 @@ import type { FC } from "react";
 
 export interface ThreadProps {
   isLoadingHistory?: boolean;
+  historyScrollRef?: (node: HTMLDivElement | null) => void;
+  isFetchingNextPage?: boolean;
 }
 
-export const Thread: FC<ThreadProps> = ({ isLoadingHistory = false }) => {
+export const Thread: FC<ThreadProps> = ({ 
+  isLoadingHistory = false,
+  historyScrollRef,
+  isFetchingNextPage = false,
+}) => {
   return (
     <ThreadPrimitive.Root
       className="aui-root aui-thread-root tw:@container tw:flex tw:h-full tw:flex-col tw:bg-background"
@@ -55,6 +61,18 @@ export const Thread: FC<ThreadProps> = ({ isLoadingHistory = false }) => {
           </div>
         ) : (
           <>
+            {/* Elemento para detectar scroll y cargar más mensajes */}
+            {historyScrollRef && (
+              <div 
+                ref={historyScrollRef}
+                className="aui-thread-infinite-scroll-trigger tw:flex tw:w-full tw:justify-center tw:py-2"
+              >
+                {isFetchingNextPage && (
+                  <Loader2Icon className="tw:size-4 tw:animate-spin tw:text-muted-foreground" />
+                )}
+              </div>
+            )}
+
             <AssistantIf condition={({ thread }) => thread.isEmpty}>
               <ThreadWelcome />
             </AssistantIf>
