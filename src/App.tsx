@@ -2,7 +2,7 @@ import { Chatbot } from "./components/chatbot";
 import type { ChatApiUrls } from "./components/chatbot";
 
 function App() {
-  const userId = 4356;
+  const userId = 4355;
 
   // API URLs configuration for testing
   const apiUrls: ChatApiUrls = {
