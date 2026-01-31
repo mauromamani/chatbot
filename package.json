@@ -1,6 +1,6 @@
 {
   "name": "@mauromamani/ai-chatbot",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "AI Chatbot component library built with React and Assistant UI",
   "type": "module",
   "main": "./dist/index.js",
@@ -43,7 +43,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mauromamani/chatbot.git"
+    "url": "https://github.com/MPA-SISTEMAS/ai-chatbot.git"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
